@@ -1,30 +1,42 @@
-# Echo MCP Server
+# MCP Server Demo - Document Analysis & Payslip Analyzer
 
-A streamable HTTP MCP (Model Context Protocol) server built with C# .NET 8, designed for Azure App Service deployment.
+A production-ready HTTP MCP (Model Context Protocol) server built with C# .NET 8, designed for Azure App Service deployment. Includes document intelligence, payslip analysis, and multiple utility tools.
 
 ## Features
 
 - **SSE (Server-Sent Events) Transport**: Supports streaming responses over HTTP
-- **Echo Tool**: A simple tool that echoes back "Hello " + your message
+- **Document Intelligence**: Extract and analyze document content using Azure Document Intelligence
+- **Payslip Analyzer**: AI-powered payslip verification and analysis with GPT-5-nano
+- **Multiple Built-in Tools**: Echo, Random Number Generator, Chuck Norris Jokes, Azure Storage Search, and more
 - **Azure App Service Ready**: Configured for easy deployment to Azure
 - **Health Check Endpoint**: Built-in health monitoring for Azure
+- **Flexible Authentication**: Support for Azure credentials and API keys
+
+## Key Tools
+
+### 1. Document Extraction
+Extracts text and structure from documents using Azure Document Intelligence.
+- Processes PDFs, images, and scanned documents
+- Returns structured content and metadata
+
+### 2. Payslip Analyzer
+AI-powered analysis of payslip documents using GPT-5-nano.
+- Verifies document authenticity
+- Extracts salary information
+- Validates payslip structure
+- Detects suspicious documents
+
+### 3. Utility Tools
+- **Echo**: Simple echo greeting tool
+- **Random Number**: Generates random numbers
+- **Chuck Norris Jokes**: Fetches random Chuck Norris jokes
+- **Azure Storage Search**: Search and retrieve documents from Azure Storage
 
 ## Endpoints
 
 - `POST /sse` - MCP server endpoint (Server-Sent Events)
 - `GET /health` - Health check endpoint
 - `GET /` - Server information
-
-## Tools
-
-### Echo
-Echoes back a greeting with the provided message.
-
-**Input:**
-- `message` (string, required): The message to echo back
-
-**Output:**
-- Returns "Hello {message}"
 
 ## ✅ Azure Resources (Pre-Deployed)
 
@@ -79,19 +91,48 @@ The deployment script will:
 
 **For detailed deployment instructions and advanced options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-## Testing the Echo Tool
+---
 
-Send a POST request to `/sse` with the following JSON-RPC format:
+## Setup & Configuration
 
+### Document Intelligence Setup
+To use the document extraction features:
+- See [DOCUMENT_INTELLIGENCE_SETUP.md](DOCUMENT_INTELLIGENCE_SETUP.md) for configuration details
+- Requires Azure Document Intelligence resource and API key
+
+### Payslip Analyzer Setup
+To use AI-powered payslip analysis:
+- See [PAYSLIP_ANALYZER_SETUP.md](PAYSLIP_ANALYZER_SETUP.md) for configuration details
+- Requires Azure AI Foundry GPT-5-nano model access
+
+---
+
+## Testing the Tools
+
+### Initialize Connection
 ```json
 {"jsonrpc":"2.0","id":"1","method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"test-client","version":"1.0.0"}}}
+```
+
+### List Available Tools
+```json
 {"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}
+```
+
+### Call a Tool
+**Echo Tool Example:**
+```json
 {"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"Echo","arguments":{"message":"World"}}}
 ```
 
-Expected response from Echo tool:
+**Random Number Tool Example:**
+```json
+{"jsonrpc":"2.0","id":"4","method":"tools/call","params":{"name":"RandomNumber","arguments":{"min":1,"max":100}}}
 ```
-Hello World
+
+**Payslip Analyzer Example:**
+```json
+{"jsonrpc":"2.0","id":"5","method":"tools/call","params":{"name":"PayslipAnalyzer","arguments":{"documentContent":"...","employeeId":"EMP123"}}}
 ```
 
 ## Project Structure
@@ -144,17 +185,16 @@ Hello World
 
 ## Scripts
 
-### Deployment Scripts
-- **Windows**: `.\scripts\deploy.ps1` - PowerShell deployment script
-- **Linux/macOS**: `./scripts/deploy.sh` - Bash deployment script
+### Deployment Script
+- **Windows PowerShell**: `.\scripts\deploy.ps1` - Main deployment script
 
-Both scripts support:
-- Local execution with `local` mode
-- Azure deployment with `azure` mode
+The script supports:
+- Local execution with `-Mode local`
+- Azure deployment with `-Mode azure -Configuration Release`
 - Custom resource groups and Web App names
 - Debug and Release configurations
 
-**Usage**: See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed examples
+**Usage**: See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed examples and parameters
 
 ## License
 
