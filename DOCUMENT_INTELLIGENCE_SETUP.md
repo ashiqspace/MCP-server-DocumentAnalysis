@@ -1,13 +1,29 @@
 # Document Intelligence Credentials - Quick Reference
 
-## ✅ Azure Resources Already In Place
+## Before You Start
 
-The following Azure resources are **already deployed and ready**:
+You need your own Azure resources. This guide assumes:
+- You have created your **Resource Group** (e.g., `my-rg`)
+- You have created your **Web App** (e.g., `my-mcpserver`)
+- You have created an **Azure Document Intelligence** resource
+- Azure CLI is installed and you're authenticated (`az login`)
 
-- **Web App**: `wa-mcpserver-sweden` (swedencentral)
-- **Resource Group**: `rg-mcpserverdemo-sweden`
+**Example commands to create these:**
+```bash
+# Create resource group
+az group create --name my-rg --location eastus
 
-All configurations will be applied to these existing resources. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment instructions.
+# Create App Service Plan
+az appservice plan create --name my-plan --resource-group my-rg --sku B1
+
+# Create Web App
+az webapp create --resource-group my-rg --plan my-plan --name my-mcpserver --runtime DOTNET:8
+
+# Create Document Intelligence resource
+az cognitiveservices account create --name my-di --resource-group my-rg --kind FormRecognizer --sku S0 --location eastus
+```
+
+Replace `my-rg` and `my-di` with your actual resource names throughout this guide.
 
 ---
 
@@ -20,21 +36,31 @@ All configurations will be applied to these existing resources. See [DEPLOYMENT.
 
 **Steps**:
 ```bash
-# 1. Create Key Vault
-az keyvault create --resource-group rg-mcpserverdemo-sweden \
-  --name kv-mcpserver-sweden --location swedencentral
+# 1. Create Key Vault (replace YOUR VALUES)
+az keyvault create --resource-group my-rg \
+  --name kv-mymcpserver --location eastus
 
 # 2. Store secrets
-az keyvault secret set --vault-name kv-mcpserver-sweden \
+az keyvault secret set --vault-name kv-mymcpserver \
   --name DocumentIntelligenceEndpoint --value "https://YOUR-RESOURCE.cognitiveservices.azure.com/"
 
-az keyvault secret set --vault-name kv-mcpserver-sweden \
+az keyvault secret set --vault-name kv-mymcpserver \
   --name DocumentIntelligenceKey --value "YOUR-API-KEY"
 
 # 3. Grant Web App access
 az keyvault set-policy --name kv-mcpserver-sweden \
-  --object-id $(az webapp show --resource-group rg-mcpserverdemo-sweden \
-  --name wa-mcpserver-sweden --query identity.principalId -o tsv) \
+  --object-id $(az webapp show --resource-group my-rg \
+```bash
+# Grant your Web App access to Document Intelligence
+WEB_APP_PRINCIPAL_ID=$(az webapp identity assign \
+  --resource-group my-rg \
+  --name my-mcpserver --query identity.principalId -o tsv) \
+
+az role assignment create \
+  --assignee $WEB_APP_PRINCIPAL_ID \
+  --role "Cognitive Services User" \
+  --scope /subscriptions/YOUR-SUBSCRIPTION-ID/resourceGroups/my-rg/providers/Microsoft.CognitiveServices/accounts/my-di
+``` \
   --secret-permissions get list
 ```
 
@@ -68,7 +94,7 @@ builder.Configuration.AddAzureKeyVault(keyVaultUrl, new DefaultAzureCredential()
 2. **Via Azure CLI**:
    ```bash
    az webapp config appsettings set \
-     --resource-group rg-mcpserverdemo-sweden \
+     --resource-group my-rg \
      --name wa-mcpserver-sweden \
      --settings DOCUMENT_INTELLIGENCE_ENDPOINT="https://YOUR-RESOURCE.cognitiveservices.azure.com/" \
      DOCUMENT_INTELLIGENCE_KEY="YOUR-API-KEY"
@@ -146,7 +172,7 @@ curl https://wa-mcpserver-sweden.azurewebsites.net/mcp \
 
 Check logs for errors:
 ```bash
-az webapp log tail --resource-group rg-mcpserverdemo-sweden \
+az webapp log tail --resource-group my-rg \
   --name wa-mcpserver-sweden --follow
 ```
 

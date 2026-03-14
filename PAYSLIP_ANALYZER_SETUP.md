@@ -1,13 +1,17 @@
 # AI Foundry GPT-5-nano Payslip Analyzer Setup
 
-## ✅ Azure Resources Already In Place
+## Before You Start
 
-The following Azure resources are **already deployed and ready**:
+You need your own Azure resources. This guide assumes:
+- You have created your **Resource Group** (e.g., `my-rg`)
+- You have created your **Web App** (e.g., `my-mcpserver`)
+- You have created an **Azure AI Foundry** resource with GPT-5-nano access
+- Azure CLI is installed and authenticated
 
-- **Web App**: `wa-mcpserver-sweden` (swedencentral)
-- **Resource Group**: `rg-mcpserverdemo-sweden`
-
-All configurations will be applied to these existing resources. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment instructions.
+**Replace placeholders throughout this guide:**
+- `my-rg` → Your resource group name
+- `my-mcpserver` → Your web app name  
+- `my-ai-foundry` → Your AI Foundry resource name
 
 ---
 
@@ -27,7 +31,7 @@ The new `PayslipAnalyzerTool` uses Azure AI Foundry's GPT-5-nano model to analyz
 Store your AI Foundry credentials in the same place as Document Intelligence:
 
 **Via Azure Portal:**
-1. Go to `wa-mcpserver-sweden` → **Configuration**
+1. Go to your Web App (e.g., `my-mcpserver`) → **Configuration**
 2. Click **New application setting** and add:
 
 | Name | Value |
@@ -40,8 +44,8 @@ Store your AI Foundry credentials in the same place as Document Intelligence:
 **Via Azure CLI:**
 ```bash
 az webapp config appsettings set \
-  --resource-group rg-mcpserverdemo-sweden \
-  --name wa-mcpserver-sweden \
+  --resource-group my-rg \
+  --name my-mcpserver \
   --settings AI_FOUNDRY_ENDPOINT="https://YOUR_AI_FOUNDRY_RESOURCE.cognitiveservices.azure.com/openai/deployments/gpt-5-nano/chat/completions?api-version=2025-01-01-preview" \
   AI_FOUNDRY_KEY="YOUR_AI_FOUNDRY_KEY"
 ```

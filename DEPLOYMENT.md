@@ -6,20 +6,35 @@ The MCP Server Demo is fully configured for deployment to **existing Azure resou
 
 ### Azure Resources Status
 
-✅ **Already Deployed and Ready**
+⚠️ **You Need Your Own Azure Resources**
 
-| Resource | Name | Region | Status |
-|----------|------|--------|--------|
-| Web App | `wa-mcpserver-sweden` | swedencentral | ✅ Active |
-| Resource Group | `rg-mcpserverdemo-sweden` | swedencentral | ✅ Active |
+This project is configured to deploy to **your own Azure resources**. You must create:
 
-**All deployments will be to these existing resources.**
+| Resource | What to Create | Example Name |
+|----------|-----------|--------|
+| **Resource Group** | Create new or use existing | `my-rg` |
+| **Web App** | Create in App Service Plan | `my-mcpserver` |
+| **Region** | Choose your region | `eastus`, `westeurope`, etc. |
+
+**Before deploying**, ensure you have:
+1. An Azure subscription
+2. Azure CLI installed and authenticated (`az login`)
+3. Created your resource group: `az group create --name YOUR-RG --location YOUR-REGION`
+4. Created your App Service Plan and Web App
+
+**Then deploy using your own names:**
+```powershell
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RESOURCE-GROUP -WebAppName YOUR-WEB-APP-NAME
+```
 
 ---
 
 ## Quick Start
 
 ### 🔧 Two Essential Commands
+
+**Important:** Replace `YOUR-RESOURCE-GROUP` and `YOUR-WEB-APP-NAME` with your own Azure resources.
 
 This project provides two main deployment commands:
 
@@ -34,13 +49,14 @@ This project provides two main deployment commands:
 
 #### 2. Azure Deployment
 ```powershell
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RESOURCE-GROUP -WebAppName YOUR-WEB-APP-NAME
 ```
-**Use this to:** Deploy to the Azure Web App (`wa-mcpserver-sweden`).
+**Use this to:** Deploy to your Azure Web App.
 - Builds in Release mode (optimized)
 - Publishes the application
-- Deploys to the pre-configured Azure Web App
-- Makes the application live at the production URL
+- Deploys to your pre-configured Azure Web App
+- Makes the application live at: `https://YOUR-WEB-APP-NAME.azurewebsites.net`
 
 ---
 
@@ -90,15 +106,13 @@ Local run with Release configuration:
 # Run locally with Debug
 .\scripts\deploy.ps1 -Mode local
 
-# Deploy to Azure with Release config
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+# Deploy to Azure with custom resources
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup my-rg -WebAppName my-mcpserver
 
 # Deploy without rebuilding
-.\scripts\deploy.ps1 -Mode azure -Configuration Release -NoBuild
-
-# Deploy to custom Azure resources
 .\scripts\deploy.ps1 -Mode azure -Configuration Release `
-  -ResourceGroup "my-rg" -WebAppName "my-webapp"
+  -ResourceGroup my-rg -WebAppName my-mcpserver -NoBuild
 ```
 
 
@@ -185,14 +199,16 @@ The application will start on `http://localhost:5000`
 
 ### Step-by-Step Deployment
 
-**PowerShell:**
+**Windows PowerShell:**
 ```powershell
-# Deploy with confirmation prompt
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+# Deploy with your resource group and web app name
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup my-rg `
+  -WebAppName my-mcpserver
 
 # Answer 'yes' to confirm deployment
 # Monitor deployment in Azure Portal or with:
-az webapp log tail --name wa-mcpserver-sweden --resource-group rg-mcpserverdemo-sweden
+az webapp log tail --name my-mcpserver --resource-group my-rg
 ```
 
 ### Verify Deployment
@@ -200,21 +216,21 @@ az webapp log tail --name wa-mcpserver-sweden --resource-group rg-mcpserverdemo-
 After deployment, verify the application:
 
 ```bash
-# Check Web App status
-az webapp show --name wa-mcpserver-sweden \
-  --resource-group rg-mcpserverdemo-sweden \
+# Check Web App status (replace with YOUR values)
+az webapp show --name my-mcpserver `
+  --resource-group my-rg `
   --query "{state:state, defaultHostName:defaultHostName}"
 
 # View application logs
-az webapp log tail --name wa-mcpserver-sweden \
-  --resource-group rg-mcpserverdemo-sweden
+az webapp log tail --name my-mcpserver `
+  --resource-group my-rg
 
-# Test the application
-curl https://wa-mcpserver-sweden.azurewebsites.net/health
+# Test the application (replace with YOUR URL)
+curl https://my-mcpserver.azurewebsites.net/health
 
 # Test the MCP endpoint
-curl -X POST https://wa-mcpserver-sweden.azurewebsites.net/mcp \
-  -H "Content-Type: application/json" \
+curl -X POST https://my-mcpserver.azurewebsites.net/mcp `
+  -H "Content-Type: application/json" `
   -d '{"jsonrpc":"2.0","id":"1","method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"test","version":"1.0.0"}}}'
 ```
 
@@ -236,6 +252,10 @@ Edit [src/appsettings.Development.json](src/appsettings.Development.json) to con
   "DocumentIntelligence": {
     "Endpoint": "https://YOUR-RESOURCE.cognitiveservices.azure.com/",
     "ApiKey": "YOUR-API-KEY"
+  },
+  "AIFoundry": {
+    "Endpoint": "YOUR-AI-FOUNDRY-ENDPOINT",
+    "Key": "YOUR-AI-FOUNDRY-KEY"
   }
 }
 ```
@@ -244,16 +264,16 @@ Edit [src/appsettings.Development.json](src/appsettings.Development.json) to con
 
 Configure Azure settings in two ways:
 
-#### Option 1: Azure Portal
-1. Go to `wa-mcpserver-sweden` → Configuration
+### Azure Portal
+1. Go to your Web App (e.g., `my-mcpserver`) → Configuration
 2. Click "New application setting"
 3. Add your settings
 
-#### Option 2: Azure CLI
+### Azure CLI
 ```bash
 az webapp config appsettings set \
-  --resource-group rg-mcpserverdemo-sweden \
-  --name wa-mcpserver-sweden \
+  --resource-group my-rg \
+  --name my-mcpserver \
   --settings \
     DOCUMENT_INTELLIGENCE_ENDPOINT="https://YOUR-RESOURCE.cognitiveservices.azure.com/" \
     DOCUMENT_INTELLIGENCE_KEY="YOUR-API-KEY"
@@ -279,18 +299,12 @@ For detailed configuration instructions, see:
   Start-Sleep -Seconds 2
   .\scripts\deploy.ps1 -Mode local
   ```
-- Bash: Kill existing process
-  ```bash
-  pkill -f dotnet
-  sleep 2
-  ./scripts/deploy.sh local
-  ```
 
 **"Build failed"**
 - Clean and rebuild:
   ```bash
   dotnet clean --project src/MCPServerDemo.csproj
-  .\scripts\deploy.ps1 -Mode local -configuration Release
+  .\scripts\deploy.ps1 -Mode local -Configuration Release
   ```
 
 ### Azure Deployment Issues
@@ -304,23 +318,23 @@ For detailed configuration instructions, see:
 - Select your subscription: `az account set --subscription "SUBSCRIPTION_NAME"`
 
 **"Deployment failed"**
-- Check Web App logs:
+- Check Web App logs (replace with your values):
   ```bash
-  az webapp log tail --name wa-mcpserver-sweden \
-    --resource-group rg-mcpserverdemo-sweden
+  az webapp log tail --name my-mcpserver `
+    --resource-group my-rg
   ```
 - Review deployment history:
   ```bash
-  az webapp deployment list --name wa-mcpserver-sweden \
-    --resource-group rg-mcpserverdemo-sweden
+  az webapp deployment list --name my-mcpserver `
+    --resource-group my-rg
   ```
 
 **"Web App not found"**
-- Verify resource group and name:
+- Verify resource group and name exist:
   ```bash
-  az webapp list --resource-group rg-mcpserverdemo-sweden
+  az webapp list --resource-group my-rg
   ```
-- Use correct names in deployment script parameter
+- Use correct names in deployment script parameters
 
 ---
 

@@ -21,7 +21,7 @@ The following resources **already exist** and are **ready for deployment**:
 
 ## 1. Executive Summary
 
-Deploy the Document Analysis & Payslip Analyzer MCP Server (.NET 8.0 ASP.NET Core application) to an **existing Azure Web App** (`wa-mcpserver-sweden` in `rg-mcpserverdemo-sweden`).
+Deploy the Document Analysis & Payslip Analyzer MCP Server (.NET 8.0 ASP.NET Core application) to your **Azure Web App**.
 
 ### Deployment Details
 - **App Name**: Document Analysis & Payslip Analyzer MCP Server

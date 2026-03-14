@@ -37,16 +37,21 @@ AI-powered analysis of payslip documents using GPT-5-nano.
 - `GET /health` - Health check endpoint
 - `GET /` - Server information
 
-## ✅ Azure Resources (Pre-Deployed)
+## ✅ Azure Resources (You Need Your Own)
 
-The following Azure resources are **already in place** and ready for deployment:
+This project deploys to **your Azure resources**. You must create:
 
-| Resource | Name | Region | Status |
-|----------|------|--------|--------|
-| **Web App** | `wa-mcpserver-sweden` | swedencentral | ✅ Active |
-| **Resource Group** | `rg-mcpserverdemo-sweden` | swedencentral | ✅ Active |
+| Resource | Example Name |
+|----------|----------|
+| **Resource Group** | `my-rg` |
+| **Web App** | `my-mcpserver` |
+| **Region** | `eastus`, `westeurope`, etc. |
 
-All deployments will automatically deploy to these **existing resources**.
+Then deploy using your names:
+```powershell
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup my-rg -WebAppName my-mcpserver
+```
 
 ## Two Essential Commands
 
@@ -58,9 +63,10 @@ Runs the MCP server locally at `http://localhost:5000` for development and testi
 
 ### 2. Azure Deployment
 ```powershell
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RG -WebAppName YOUR-WEB-APP
 ```
-Deploys to production at `https://wa-mcpserver-sweden.azurewebsites.net`
+Deploys to your Azure Web App at `https://YOUR-WEB-APP.azurewebsites.net`
 
 ---
 
@@ -75,18 +81,18 @@ The server will start on `http://localhost:5000`.
 
 **For detailed local development instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-## Deploying to Azure App Service
-
-**PowerShell:**
+### Windows PowerShell
 ```powershell
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+# Deploy to your Azure resources
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup my-rg -WebAppName my-mcpserver
 ```
 
 The deployment script will:
 1. Build the project in Release mode (optimized for performance)
 2. Publish the application
-3. Deploy to the existing Web App: `wa-mcpserver-sweden`
-4. Make the application available at: `https://wa-mcpserver-sweden.azurewebsites.net`
+3. Deploy to your Web App: `my-mcpserver`
+4. Make the application available at: `https://my-mcpserver.azurewebsites.net`
 
 **For detailed deployment instructions and advanced options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 

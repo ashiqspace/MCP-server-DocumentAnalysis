@@ -14,9 +14,10 @@ Starts the server locally at `http://localhost:5000` for development and testing
 
 #### ☁️ Deploy to Azure
 ```powershell
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RESOURCE-GROUP -WebAppName YOUR-WEB-APP-NAME
 ```
-Deploys to production Web App: `wa-mcpserver-sweden`
+Deploys to your Azure Web App using your own resources.
 
 ---
 
@@ -35,24 +36,32 @@ Application starts at: `http://localhost:5000`
 
 **PowerShell:**
 ```powershell
-.\scripts\deploy.ps1 -Mode azure -Configuration Release
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RESOURCE-GROUP -WebAppName YOUR-WEB-APP-NAME
 ```
 
 The script will:
 - Build the project in Release mode (optimized)
 - Publish the application
-- Upload to existing Web App: `wa-mcpserver-sweden`
-- Application will be live at: `https://wa-mcpserver-sweden.azurewebsites.net`
+- Deploy to your Web App
+- Application will be live at: `https://YOUR-WEB-APP-NAME.azurewebsites.net`
 
 ---
 
-## 📋 Deployment Targets
+## 📋 Before You Deploy
 
-✅ **Already in Place - Ready to Deploy**
+You need your own Azure resources:
 
-- **Web App**: `wa-mcpserver-sweden`
-- **Region**: swedencentral
-- **Resource Group**: `rg-mcpserverdemo-sweden`
+✅ **Create these first:**
+- Resource Group: `az group create --name YOUR-RG --location eastus`
+- Web App: Create via Azure Portal or CLI
+- Authenticated with Azure: `az login`
+
+✅ **Then deploy:**
+```powershell
+.\scripts\deploy.ps1 -Mode azure -Configuration Release `
+  -ResourceGroup YOUR-RG -WebAppName YOUR-WEB-APP
+```
 
 ---
 
@@ -173,7 +182,7 @@ sleep 2
 ```bash
 # Check logs
 az webapp log tail --name wa-mcpserver-sweden \
-  --resource-group rg-mcpserverdemo-sweden --follow
+  --resource-group my-rg --follow
 
 # Check deployment history
 az webapp deployment list --name wa-mcpserver-sweden \
@@ -221,7 +230,7 @@ az account set --subscription "YOUR_SUBSCRIPTION_NAME"
 2. **Test the endpoints** at `http://localhost:5000/health`
 3. **Deploy to Azure**: `.\scripts\deploy.ps1 -Mode azure -Configuration Release`
 4. **Configure credentials**: See [DOCUMENT_INTELLIGENCE_SETUP.md](DOCUMENT_INTELLIGENCE_SETUP.md)
-5. **Monitor logs**: `az webapp log tail --name wa-mcpserver-sweden --resource-group rg-mcpserverdemo-sweden`
+5. **Monitor logs**: `az webapp log tail --name my-mcpserver --resource-group my-rg`
 
 ---
 
