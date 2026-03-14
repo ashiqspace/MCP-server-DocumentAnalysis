@@ -1,4 +1,4 @@
-# Azure Deployment Plan - MCP Server (Echo)
+# Azure Deployment Plan - MCP Server (Document Analysis & Payslip Analyzer)
 
 **Status**: `Ready for Execution`  
 **Last Updated**: 2026-02-28  
@@ -21,10 +21,10 @@ The following resources **already exist** and are **ready for deployment**:
 
 ## 1. Executive Summary
 
-Deploy the Echo MCP Server (.NET 8.0 ASP.NET Core application) to an **existing Azure Web App** (`wa-mcpserver-sweden` in `rg-mcpserverdemo-sweden`).
+Deploy the Document Analysis & Payslip Analyzer MCP Server (.NET 8.0 ASP.NET Core application) to an **existing Azure Web App** (`wa-mcpserver-sweden` in `rg-mcpserverdemo-sweden`).
 
 ### Deployment Details
-- **App Name**: Echo MCP Server
+- **App Name**: Document Analysis & Payslip Analyzer MCP Server
 - **Runtime**: .NET 8.0
 - **Framework**: ASP.NET Core
 - **Target Service**: Azure Web App (Linux or Windows)
@@ -40,7 +40,11 @@ Deploy the Echo MCP Server (.NET 8.0 ASP.NET Core application) to an **existing 
 - **Port**: 5000 (HTTP)
 - **Framework**: ASP.NET Core with ModelContextProtocol
 - **Key Tools**:
-  - EchoTool
+  - DocumentExtractionService
+  - PayslipAnalyzerTool
+  - RandomNumberTool
+  - ChuckNorrisJokeTool
+  - AzureStorageSearchTool
   - RandomNumberTool
   - ChuckNorrisJokeTool
   - AzureStorageTool

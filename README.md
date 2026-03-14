@@ -7,7 +7,7 @@ A production-ready HTTP MCP (Model Context Protocol) server built with C# .NET 8
 - **SSE (Server-Sent Events) Transport**: Supports streaming responses over HTTP
 - **Document Intelligence**: Extract and analyze document content using Azure Document Intelligence
 - **Payslip Analyzer**: AI-powered payslip verification and analysis with GPT-5-nano
-- **Multiple Built-in Tools**: Echo, Random Number Generator, Chuck Norris Jokes, Azure Storage Search, and more
+- **Multiple Built-in Tools**: Random Number Generator, Chuck Norris Jokes, Azure Storage Search, Payslip Analyzer, Document Extraction
 - **Azure App Service Ready**: Configured for easy deployment to Azure
 - **Health Check Endpoint**: Built-in health monitoring for Azure
 - **Flexible Authentication**: Support for Azure credentials and API keys
@@ -27,8 +27,7 @@ AI-powered analysis of payslip documents using GPT-5-nano.
 - Detects suspicious documents
 
 ### 3. Utility Tools
-- **Echo**: Simple echo greeting tool
-- **Random Number**: Generates random numbers
+- **Random Number**: Generates random numbers in a specified range
 - **Chuck Norris Jokes**: Fetches random Chuck Norris jokes
 - **Azure Storage Search**: Search and retrieve documents from Azure Storage
 
@@ -120,11 +119,6 @@ To use AI-powered payslip analysis:
 ```
 
 ### Call a Tool
-**Echo Tool Example:**
-```json
-{"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"Echo","arguments":{"message":"World"}}}
-```
-
 **Random Number Tool Example:**
 ```json
 {"jsonrpc":"2.0","id":"4","method":"tools/call","params":{"name":"RandomNumber","arguments":{"min":1,"max":100}}}
@@ -142,16 +136,18 @@ To use AI-powered payslip analysis:
 │   ├── MCPServerDemo.csproj         # .NET 8 project file
 │   ├── Program.cs                    # Application entry point
 │   ├── Tools/                        # MCP tools
-│   │   ├── EchoTool.cs
 │   │   ├── RandomNumberTool.cs
 │   │   ├── ChuckNorrisJokeTool.cs
-│   │   ├── AzureStorageTool.cs
+│   │   ├── AzureStorageSearchTool.cs
 │   │   ├── PayslipAnalyzerTool.cs
-│   │   └── AzureDocumentIntelligenceTool.cs
+│   │   └── DocumentExtractionService.cs
 │   ├── Models/                       # Data models
 │   │   └── McpModels.cs
-│   ├── Services/                     # MCP server services
-│   │   └── McpService.cs
+│   ├── Prompts/                      # AI prompt templates
+│   │   ├── PayslipPrompts.cs
+│   │   └── PromptBuilder.cs
+│   ├── Services/                     # Business logic services
+│   │   └── DocumentExtractionService.cs
 │   ├── appsettings.json              # Production configuration
 │   ├── appsettings.Development.json # Local development configuration
 │   └── appsettings.Production.json  # Azure production configuration

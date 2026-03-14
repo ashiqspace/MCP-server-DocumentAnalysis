@@ -113,12 +113,10 @@ Demo-mcp-server/
 │   ├── MCPServerDemo.csproj         # Main project file
 │   ├── Program.cs                    # Application entry point
 │   ├── Tools/                        # MCP tools
-│   │   ├── EchoTool.cs
 │   │   ├── RandomNumberTool.cs
 │   │   ├── ChuckNorrisJokeTool.cs
-│   │   ├── AzureStorageTool.cs
-│   │   ├── PayslipAnalyzerTool.cs
-│   │   └── AzureDocumentIntelligenceTool.cs
+│   │   ├── AzureStorageSearchTool.cs
+│   │   └── PayslipAnalyzerTool.cs
 │   ├── appsettings.json              # Production settings
 │   ├── appsettings.Development.json # Local development settings
 │   └── appsettings.Production.json  # Azure production settings

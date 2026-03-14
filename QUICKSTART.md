@@ -63,7 +63,7 @@ The script will:
 - ✅ Azure Web App deployment
 - ✅ Health check endpoint
 - ✅ MCP protocol support
-- ✅ 6 built-in tools (Echo, Random, Chuck Norris, Storage, etc.)
+- ✅ 5 built-in tools (Random, Chuck Norris, Storage Search, Payslip Analyzer, Document Extraction)
 - ✅ Azure Document Intelligence integration
 - ✅ AI Foundry payslip analyzer
 
@@ -95,7 +95,7 @@ The script will:
 # Health check
 curl http://localhost:5000/health
 
-# Echo tool test
+# Tool list request
 curl -X POST http://localhost:5000/mcp \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":"1","method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"test","version":"1.0.0"}}}'
