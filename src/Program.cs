@@ -1,4 +1,9 @@
+using EchoMcpServer.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Register services
+builder.Services.AddSingleton<DocumentExtractionService>();
 
 builder.Services
     .AddMcpServer()

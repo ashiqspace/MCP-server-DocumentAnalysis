@@ -26,27 +26,58 @@ Echoes back a greeting with the provided message.
 **Output:**
 - Returns "Hello {message}"
 
+## ✅ Azure Resources (Pre-Deployed)
+
+The following Azure resources are **already in place** and ready for deployment:
+
+| Resource | Name | Region | Status |
+|----------|------|--------|--------|
+| **Web App** | `wa-mcpserver-sweden` | swedencentral | ✅ Active |
+| **Resource Group** | `rg-mcpserverdemo-sweden` | swedencentral | ✅ Active |
+
+All deployments will automatically deploy to these **existing resources**.
+
+## Two Essential Commands
+
+### 1. Local Development
+```powershell
+.\scripts\deploy.ps1 -Mode local
+```
+Runs the MCP server locally at `http://localhost:5000` for development and testing.
+
+### 2. Azure Deployment
+```powershell
+.\scripts\deploy.ps1 -Mode azure -Configuration Release
+```
+Deploys to production at `https://wa-mcpserver-sweden.azurewebsites.net`
+
+---
+
 ## Running Locally
 
-```bash
-dotnet restore
-dotnet run
+**PowerShell:**
+```powershell
+.\scripts\deploy.ps1 -Mode local
 ```
 
-The server will start on `http://localhost:5000` (or the port specified in launchSettings.json).
+The server will start on `http://localhost:5000`.
+
+**For detailed local development instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
 ## Deploying to Azure App Service
 
-1. Build the project:
-```bash
-dotnet publish -c Release -o ./publish
+**PowerShell:**
+```powershell
+.\scripts\deploy.ps1 -Mode azure -Configuration Release
 ```
 
-2. Deploy to Azure App Service using:
-   - Azure CLI
-   - Visual Studio
-   - GitHub Actions
-   - Azure DevOps Pipelines
+The deployment script will:
+1. Build the project in Release mode (optimized for performance)
+2. Publish the application
+3. Deploy to the existing Web App: `wa-mcpserver-sweden`
+4. Make the application available at: `https://wa-mcpserver-sweden.azurewebsites.net`
+
+**For detailed deployment instructions and advanced options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
 ## Testing the Echo Tool
 
@@ -66,21 +97,64 @@ Hello World
 ## Project Structure
 
 ```
-├── Models/
-│   └── McpModels.cs          # MCP protocol models
-├── Services/
-│   └── McpService.cs         # MCP server implementation
-├── Tools/
-│   └── EchoTool.cs           # Echo tool implementation
-├── Program.cs                 # Application entry point
-├── EchoMcpServer.csproj      # Project file
-└── appsettings.json          # Configuration
+├── src/                              # Source code
+│   ├── MCPServerDemo.csproj         # .NET 8 project file
+│   ├── Program.cs                    # Application entry point
+│   ├── Tools/                        # MCP tools
+│   │   ├── EchoTool.cs
+│   │   ├── RandomNumberTool.cs
+│   │   ├── ChuckNorrisJokeTool.cs
+│   │   ├── AzureStorageTool.cs
+│   │   ├── PayslipAnalyzerTool.cs
+│   │   └── AzureDocumentIntelligenceTool.cs
+│   ├── Models/                       # Data models
+│   │   └── McpModels.cs
+│   ├── Services/                     # MCP server services
+│   │   └── McpService.cs
+│   ├── appsettings.json              # Production configuration
+│   ├── appsettings.Development.json # Local development configuration
+│   └── appsettings.Production.json  # Azure production configuration
+├── scripts/                          # Deployment scripts
+│   ├── deploy.ps1                   # PowerShell script (Windows)
+│   └── deploy.sh                    # Bash script (Linux/macOS)
+├── .azure/                           # Azure configuration
+│   └── plan.md                      # Detailed deployment plan
+├── README.md                         # This file
+├── DEPLOYMENT.md                     # 📖 Complete deployment guide
+├── DOCUMENT_INTELLIGENCE_SETUP.md   # Document Intelligence configuration
+└── PAYSLIP_ANALYZER_SETUP.md        # Payslip analyzer configuration
 ```
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [QUICKSTART.md](QUICKSTART.md) | ⚡ **Get started in 2 minutes** - Quick commands & examples |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | 📖 **Complete deployment guide** - Detailed instructions & troubleshooting |
+| [SCRIPTS_REFERENCE.md](SCRIPTS_REFERENCE.md) | 🔧 **Script documentation** - Parameters, examples & CI/CD integration |
+| [DOCUMENT_INTELLIGENCE_SETUP.md](DOCUMENT_INTELLIGENCE_SETUP.md) | Azure Document Intelligence credentials & setup |
+| [PAYSLIP_ANALYZER_SETUP.md](PAYSLIP_ANALYZER_SETUP.md) | AI Foundry payslip analyzer configuration |
+| [.azure/plan.md](.azure/plan.md) | Detailed Azure deployment plan & architecture |
 
 ## Requirements
 
-- .NET 8 SDK
-- Azure subscription (for deployment)
+- **.NET 8 SDK** - [Download](https://dotnet.microsoft.com/download)
+- **Azure CLI** - [Install](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) (for Azure deployment)
+- **Azure subscription** - For deploying to cloud
+
+## Scripts
+
+### Deployment Scripts
+- **Windows**: `.\scripts\deploy.ps1` - PowerShell deployment script
+- **Linux/macOS**: `./scripts/deploy.sh` - Bash deployment script
+
+Both scripts support:
+- Local execution with `local` mode
+- Azure deployment with `azure` mode
+- Custom resource groups and Web App names
+- Debug and Release configurations
+
+**Usage**: See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed examples
 
 ## License
 
