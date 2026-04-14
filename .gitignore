@@ -10,3 +10,8 @@ appsettings.*.json
 !appsettings.json
 /publish
 publish.zip
+
+# Presentation Materials (local only)
+QUICK_REFERENCE.md
+presentation/PRESENTATION_OUTLINE.md
+presentation/SPEAKER_NOTES.md

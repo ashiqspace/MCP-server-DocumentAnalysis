@@ -1,0 +1,49 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "MCP Server Demo - Community Session Tour",
+  "description": "Quick overview of an HTTP MCP Server with document analysis and AI payslip verification",
+  "steps": [
+    {
+      "file": "README.md",
+      "line": 1,
+      "title": "Welcome to MCP Server Demo",
+      "description": "An HTTP MCP server built with C# .NET 8 demonstrating document analysis and AI-powered payslip verification using Azure services."
+    },
+    {
+      "file": "src/Program.cs",
+      "line": 1,
+      "title": "Application Setup",
+      "description": "Program.cs sets up the MCP server: registers DocumentExtractionService, initializes the framework, discovers all tools with WithToolsFromAssembly(), and routes requests through MapMcp()."
+    },
+    {
+      "file": "src/Tools/AzureStorageSearchTool.cs",
+      "line": 11,
+      "title": "Azure Storage Configuration",
+      "description": "The constructor uses a smart priority: environment variables first (for Azure), config files second (for local), fallback to anonymous access. This separates secrets from code."
+    },
+    {
+      "file": "src/Tools/AzureStorageSearchTool.cs",
+      "line": 65,
+      "title": "Searching Documents",
+      "description": "SearchFilesByName uses two strategies: check blob tags first (fast), then extract and search PDF content (comprehensive fallback). Always finds documents regardless of metadata."
+    },
+    {
+      "file": "src/Tools/AzureStorageSearchTool.cs",
+      "line": 132,
+      "title": "Search Payslip by Employee ID",
+      "description": "SearchFilesByEmployeeId retrieves the payslip document from Azure Storage by matching the employee ID tag. Returns the document URL so it can be validated."
+    },
+    {
+      "file": "src/Tools/PayslipAnalyzerTool.cs",
+      "line": 54,
+      "title": "Validate Payslip Content",
+      "description": "AnalyzePayslipContent orchestrates the complete validation: extracts document content, applies PayslipPrompts validation rules, and returns fraud risk assessment with detailed findings."
+    },
+    {
+      "file": "src/Prompts/PayslipPrompts.cs",
+      "line": 1,
+      "title": "🎯 Validation Prompts - Fraud Detection Rules",
+      "description": "PayslipPrompts defines the exact validation criteria: structural requirements (earnings breakdown, deductions, net pay), fraud patterns (fabricated docs with minimal fields), and authenticity rules. This is the intelligence that powers validation."
+    }
+  ]
+}

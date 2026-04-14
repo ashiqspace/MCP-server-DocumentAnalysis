@@ -150,46 +150,6 @@ curl -X POST https://wa-mcpserver-sweden.azurewebsites.net/mcp \
 
 ---
 
-### 3. **analyzePayslipBatch**
-Analyzes multiple payslips for an employee and generates a summary with financial totals and trend analysis.
-
-**Parameters:**
-- `employeeId` (required): Employee ID
-- `payslipContents` (required): Multiple extracted payslip contents separated by `---PAYSLIP_SEPARATOR---`
-
-**Example Request:**
-```bash
-curl -X POST https://wa-mcpserver-sweden.azurewebsites.net/mcp \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jsonrpc":"2.0",
-    "id":1,
-    "method":"tools/call",
-    "params":{
-      "name":"analyzePayslipBatch",
-      "arguments":{
-        "employeeId":"EMP12345",
-        "payslipContents":"Employee: John Doe\nEmployee ID: EMP12345\nPay Period: 2026-01-01 to 2026-01-31\nGross Salary: $5,000\nNet Pay: $3,700\n---PAYSLIP_SEPARATOR---\nEmployee: John Doe\nEmployee ID: EMP12345\nPay Period: 2026-02-01 to 2026-02-28\nGross Salary: $5,000\nNet Pay: $3,700"
-      }
-    }
-  }'
-```
-
-**Response Example:**
-```
-Employee Verification: Consistent
-Payslip Count: 2
-Date Range: 2026-01-01 to 2026-02-28
-Financial Summary:
-  * Total Gross: $10,000
-  * Total Deductions: $2,600
-  * Total Net: $7,400
-  * Average per Period: $5,000
-Trends & Anomalies: None detected - consistent income
-Issues/Flags: None
-Summary: Two valid payslips for employee EMP12345 with consistent income and deduction patterns across both pay periods.
-```
-
 ## Workflow Integration
 
 ### Complete Document Analysis Workflow
@@ -210,11 +170,6 @@ Summary: Two valid payslips for employee EMP12345 with consistent income and ded
 4. **Analyze** for authenticity and information extraction:
    ```
    analyzePayslipContent(extractedContent, employeeId, employeeName)
-   ```
-
-5. **Batch analysis** for multiple payslips:
-   ```
-   analyzePayslipBatch(employeeId, payslipContents)
    ```
 
 ## Security Considerations

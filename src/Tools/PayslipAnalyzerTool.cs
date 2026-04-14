@@ -23,11 +23,11 @@ public class PayslipAnalyzerTool
         _documentExtractionService = documentExtractionService;
 
         // Priority 1: Environment variables (App Service settings or explicit override)
-        _aiFoundryEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT") ?? 
+        _aiFoundryEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT") ??
             configuration["AIFoundry:Endpoint"];
-        _aiFoundryKey = Environment.GetEnvironmentVariable("AI_FOUNDRY_KEY") ?? 
+        _aiFoundryKey = Environment.GetEnvironmentVariable("AI_FOUNDRY_KEY") ??
             configuration["AIFoundry:Key"];
-        _aiFoundryModel = Environment.GetEnvironmentVariable("AI_FOUNDRY_MODEL") ?? 
+        _aiFoundryModel = Environment.GetEnvironmentVariable("AI_FOUNDRY_MODEL") ??
             configuration["AIFoundry:Model"] ?? "gpt-4";
 
         // Log configuration status
@@ -172,59 +172,6 @@ public class PayslipAnalyzerTool
         catch (Exception ex)
         {
             return $"Error validating payslip document: {ex.Message}";
-        }
-    }
-
-    /// <summary>
-    /// Batch processes multiple payslips for an employee and generates a summary
-    /// </summary>
-    [McpServerTool(Name = "analyzePayslipBatch")]
-    [Description("Analyzes multiple payslips for an employee and generates a summary of income and deductions")]
-    public async Task<string> AnalyzePayslipBatch(
-        [Description("Employee ID to analyze")] string employeeId,
-        [Description("Semicolon-separated list of payslip document URLs")] string payslipUrls)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(_aiFoundryEndpoint) || string.IsNullOrEmpty(_aiFoundryKey))
-            {
-                return "Error: AI Foundry not configured.";
-            }
-
-            var payslips = payslipUrls.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(url => url.Trim())
-                .ToArray();
-
-            if (payslips.Length == 0)
-            {
-                return "No payslips provided for batch analysis.";
-            }
-
-            // Extract content from all payslips
-            var payslipContents = new List<string>();
-            foreach (var payslipUrl in payslips)
-            {
-                var content = await _documentExtractionService.ExtractContentFromPdfAsync(payslipUrl);
-                if (string.IsNullOrEmpty(content) || content.Contains("not configured", StringComparison.OrdinalIgnoreCase))
-                {
-                    return $"Error: Unable to extract document content from {payslipUrl}. {content}";
-                }
-                payslipContents.Add(content);
-            }
-
-            // Format extracted contents for analysis
-            var payslipsFormatted = string.Join("\n\n--- PAYSLIP SEPARATOR ---\n\n", 
-                payslipContents.Select((content, index) => $"Payslip {index + 1}:\n{content}"));
-
-            // Build batch prompt using PromptBuilder
-            var batchPrompt = PromptBuilder.BuildBatchPrompt(employeeId, payslips.Length, payslipsFormatted);
-
-            var response = await CallAIModel(batchPrompt);
-            return response;
-        }
-        catch (Exception ex)
-        {
-            return $"Error analyzing payslip batch: {ex.Message}";
         }
     }
 }
