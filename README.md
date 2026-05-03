@@ -1,6 +1,6 @@
 # MCP Server Demo - Document Analysis & Payslip Analyzer
 
-A production-ready HTTP MCP (Model Context Protocol) server built with C# .NET 8, designed for Azure App Service deployment. Includes document intelligence, payslip analysis, and multiple utility tools.
+A HTTP MCP (Model Context Protocol) server built with C# .NET 8, designed for Azure App Service deployment. Includes document intelligence, payslip analysis, and multiple utility tools.
 
 ## Features
 
